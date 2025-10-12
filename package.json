@@ -22,6 +22,7 @@
     "@wfynbzlx666/sdk-http": "^0.0.4",
     "@wfynbzlx666/sdk-perf": "^1.0.2",
     "@wfynbzlx666/sdk-realtime": "^0.0.1",
+    "@wfynbzlx666/sdk-telemetry": "^0.0.1",
     "axios": "^1.8.4",
     "echarts": "^5.6.0",
     "element-plus": "^2.9.6",
