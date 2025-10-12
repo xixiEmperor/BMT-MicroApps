@@ -13,7 +13,7 @@ export const useRealtime = () => {
       userId: uInfo.userinfo.id,
       user_role: uInfo.userinfo.role,
     },
-    heartbeatInterval: 15000,
+    heartbeatInterval: 60000,
     reconnect: {
       enabled: true,
       maxAttempts: 5,

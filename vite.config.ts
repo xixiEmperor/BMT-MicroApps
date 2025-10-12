@@ -36,10 +36,11 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
-        '@wfynbzlx666/sdk-realtime': path.resolve(__dirname, '../BMT-Central-SDK/packages/sdk-realtime/src/index'),
-        '@wfynbzlx666/sdk-http': path.resolve(__dirname, '../BMT-Central-SDK/packages/sdk-http/src/index'),
-        '@wfynbzlx666/sdk-perf': path.resolve(__dirname, '../BMT-Central-SDK/packages/sdk-perf/src/index'),
-        '@wfynbzlx666/sdk-core': path.resolve(__dirname, '../BMT-Central-SDK/packages/sdk-core/src/index'),
+        // '@wfynbzlx666/sdk-realtime': path.resolve(__dirname, '../../react workspace/BMT-Central-SDK/packages/sdk-realtime/src/index'),
+        // '@wfynbzlx666/sdk-http': path.resolve(__dirname, '../../react workspace/BMT-Central-SDK/packages/sdk-http/src/index'),
+        // '@wfynbzlx666/sdk-perf': path.resolve(__dirname, '../../react workspace/BMT-Central-SDK/packages/sdk-perf/src/index'),
+        // '@wfynbzlx666/sdk-core': path.resolve(__dirname, '../../react workspace/BMT-Central-SDK/packages/sdk-core/src/index'),
+        // '@wfynbzlx666/sdk-telemetry': path.resolve(__dirname, '../../react workspace/BMT-Central-SDK/packages/sdk-telemetry/src/index'),
       },
     },
     // 生产构建优化

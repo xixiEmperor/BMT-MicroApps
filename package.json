@@ -18,9 +18,9 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
     "@vueup/vue-quill": "^1.2.0",
-    "@wfynbzlx666/sdk-core": "^0.0.3",
-    "@wfynbzlx666/sdk-http": "^0.0.2",
-    "@wfynbzlx666/sdk-perf": "^1.0.0",
+    "@wfynbzlx666/sdk-core": "^0.0.2",
+    "@wfynbzlx666/sdk-http": "^0.0.4",
+    "@wfynbzlx666/sdk-perf": "^1.0.2",
     "@wfynbzlx666/sdk-realtime": "^0.0.1",
     "axios": "^1.8.4",
     "echarts": "^5.6.0",
@@ -62,13 +62,5 @@
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "tailwindcss": "3.4.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "@wfynbzlx666/sdk-realtime": "link:../BMT-Central-SDK/packages/sdk-realtime",
-      "@wfynbzlx666/sdk-http": "link:../BMT-Central-SDK/packages/sdk-http",
-      "@wfynbzlx666/sdk-perf": "link:../BMT-Central-SDK/packages/sdk-perf",
-      "@wfynbzlx666/sdk-core": "link:../BMT-Central-SDK/packages/sdk-core"
-    }
   }
 }

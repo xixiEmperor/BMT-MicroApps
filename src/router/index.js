@@ -1,10 +1,10 @@
 /**
  * Vue Router 路由配置
- * 
+ *
  * 本路由配置支持微前端架构：
  * 1. C端用户路由：首页、商城、论坛、用户中心等（Vue3实现）
  * 2. B端管理后台路由：通过无界微前端框架集成React应用
- * 
+ *
  * 微前端实现说明：
  * - /admin/* 路由被统一代理到AdminContainer组件
  * - AdminContainer使用无界框架加载React子应用
@@ -14,8 +14,9 @@
 
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { useUserStore } from '@/stores'
-// import { nextTick } from 'vue'
-// import { Perf } from '@wfynbzlx666/sdk-perf'
+import { nextTick } from 'vue'
+import { Perf } from '@wfynbzlx666/sdk-perf'
+import { Telemetry } from '@wfynbzlx666/sdk-telemetry'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -113,7 +114,7 @@ const router = createRouter({
     },
     /**
      * 微前端管理后台路由配置
-     * 
+     *
      * 这个路由配置用于集成React管理后台子应用
      * 主要特点：
      * 1. 使用 pathMatch(.*) 捕获所有 /admin/* 路径
@@ -126,21 +127,21 @@ const router = createRouter({
       // pathMatch(.*) 表示匹配任意字符，* 表示可选
       // 这样 /admin、/admin/dashboard、/admin/users 等路径都会被捕获
       path: '/admin/:pathMatch(.*)*',
-      
+
       // 使用无界容器组件，负责加载和渲染React子应用
       component: () => import('@/views/admin/AdminContainer.vue'),
-      
-      meta: { 
+
+      meta: {
         // 需要管理员权限验证
-        requiresAdmin: true, 
-        
+        requiresAdmin: true,
+
         // 页面标题
         title: '管理后台',
-        
+
         // 关闭Keep-Alive缓存，确保每次访问都是最新状态
         // 这对微前端应用很重要，避免状态混乱
         keepAlive: false,
-        
+
         // 微前端标识，用于区分这是一个微前端路由
         isMicroFrontend: true
       },
@@ -162,6 +163,9 @@ const router = createRouter({
 
 // 全局前置守卫，检查用户是否已登录
 router.beforeEach((to, from, next) => {
+  if (Perf.isInitialized()) {
+    Perf.stop()
+  }
   // 设置页面标题
   if (to.meta.title) {
     document.title = to.meta.title
@@ -219,29 +223,34 @@ router.beforeEach((to, from, next) => {
 })
 
 // 全局后置钩子 - 页面性能监控
-// router.afterEach((to, from) => {
-//   // 记录路由变化
-//   console.log(`路由从 ${from.path} 跳转到 ${to.path}`)
-  
-//   // 使用 Vue 的 nextTick 确保 DOM 更新完成
-//   nextTick(() => {
-//     // 再使用 requestAnimationFrame 确保渲染完成
-//     requestAnimationFrame(() => {
-//       // 延迟一帧，确保所有异步组件都加载完成
-//       requestAnimationFrame(() => {
-//         // 现在可以安全地进行性能分析
-//         Perf.init({
-//           sampleRate: 1,
-//           autoEnableWebVitals: true,
-//           enableDetailedMonitoring: false,
-//           enableAdvancedMetrics: false,
-//           onMetric: (metric) => {
-//             console.log(metric)
-//           }
-//         })
-//       })
-//     })
-//   })
-// })
+router.afterEach((to, from) => {
+  // 记录路由变化
+  console.log(`路由从 ${from.path} 跳转到 ${to.path}`)
+
+  // 使用 Vue 的 nextTick 确保 DOM 更新完成
+  nextTick(() => {
+    // 再使用 requestAnimationFrame 确保渲染完成
+    requestAnimationFrame(() => {
+      // 延迟一帧，确保所有异步组件都加载完成
+      requestAnimationFrame(() => {
+        // 现在可以安全地进行性能分析
+        try {
+          Perf.init({
+            sampleRate: 1,
+            autoEnableWebVitals: true,
+            enableDetailedMonitoring: false,
+            enableAdvancedMetrics: false,
+            onMetric: (metric) => {
+              console.log(metric)
+              Telemetry.trackPageView(to.path, metric)
+            }
+          })
+        } catch (error) {
+          console.error('性能分析初始化失败:', error)
+        }
+      })
+    })
+  })
+})
 
 export default router

@@ -5,10 +5,11 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@wfynbzlx666/sdk-realtime': link:../BMT-Central-SDK/packages/sdk-realtime
-  '@wfynbzlx666/sdk-http': link:../BMT-Central-SDK/packages/sdk-http
-  '@wfynbzlx666/sdk-perf': link:../BMT-Central-SDK/packages/sdk-perf
-  '@wfynbzlx666/sdk-core': link:../BMT-Central-SDK/packages/sdk-core
+  '@wfynbzlx666/sdk-realtime': link:../../react workspace/BMT-Central-SDK/packages/sdk-realtime
+  '@wfynbzlx666/sdk-http': link:../../react workspace/BMT-Central-SDK/packages/sdk-http
+  '@wfynbzlx666/sdk-perf': link:../../react workspace/BMT-Central-SDK/packages/sdk-perf
+  '@wfynbzlx666/sdk-core': link:../../react workspace/BMT-Central-SDK/packages/sdk-core
+  '@wfynbzlx666/sdk-telemetry': link:../../react workspace/BMT-Central-SDK/packages/sdk-telemetry
 
 importers:
 
@@ -21,17 +22,17 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0(vue@3.5.13(typescript@5.8.2))
       '@wfynbzlx666/sdk-core':
-        specifier: link:../BMT-Central-SDK/packages/sdk-core
-        version: link:../BMT-Central-SDK/packages/sdk-core
+        specifier: link:../../react workspace/BMT-Central-SDK/packages/sdk-core
+        version: link:../../react workspace/BMT-Central-SDK/packages/sdk-core
       '@wfynbzlx666/sdk-http':
-        specifier: link:../BMT-Central-SDK/packages/sdk-http
-        version: link:../BMT-Central-SDK/packages/sdk-http
+        specifier: link:../../react workspace/BMT-Central-SDK/packages/sdk-http
+        version: link:../../react workspace/BMT-Central-SDK/packages/sdk-http
       '@wfynbzlx666/sdk-perf':
-        specifier: link:../BMT-Central-SDK/packages/sdk-perf
-        version: link:../BMT-Central-SDK/packages/sdk-perf
+        specifier: link:../../react workspace/BMT-Central-SDK/packages/sdk-perf
+        version: link:../../react workspace/BMT-Central-SDK/packages/sdk-perf
       '@wfynbzlx666/sdk-realtime':
-        specifier: link:../BMT-Central-SDK/packages/sdk-realtime
-        version: link:../BMT-Central-SDK/packages/sdk-realtime
+        specifier: link:../../react workspace/BMT-Central-SDK/packages/sdk-realtime
+        version: link:../../react workspace/BMT-Central-SDK/packages/sdk-realtime
       axios:
         specifier: ^1.8.4
         version: 1.8.4
