@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores'
 import { View, Delete, CaretTop } from '@element-plus/icons-vue'
 import { formatDateTime } from '@/utils/format'
-import { navigate } from '@/utils/router'
 import { getUserPosts, deletePostService } from '@/api/forum'
 
 const router = useRouter()
@@ -66,7 +65,7 @@ const loadUserPosts = async () => {
 
 // 跳转到帖子详情
 const navigateToDetail = (postId) => {
-  navigate(`/post/${postId}`)
+  router.push(`/post/${postId}`)
 }
 
 // 删除帖子

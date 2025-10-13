@@ -3,7 +3,6 @@ import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
 import { User, ShoppingCart, Calendar } from '@element-plus/icons-vue'
 import { useUserStore, useCartStore } from '@/stores'
 import { useRouter } from 'vue-router'
-import { navigate } from '@/utils/router'
 import logoImg from '@/assets/whlg_logo.png'
 import { useTokenCheck } from '@/hooks/useTokenCheck'
 
@@ -73,7 +72,7 @@ const goToMyPost = () => {
 
 // 跳转到登录页面
 const goToLogin = () => {
-  navigate('/login')
+  router.push('/login')
 }
 
 // 跳转到购物车页面

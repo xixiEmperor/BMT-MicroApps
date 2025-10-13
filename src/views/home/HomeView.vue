@@ -6,8 +6,10 @@ import {
 } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import imgUrl from '@/assets/index_img.png'
-import { navigate } from '@/utils/router'
 import ChatInterface from '@/components/ChatInterface.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 // AI助手对话框控制
 const showAIChat = ref(false)
@@ -17,15 +19,15 @@ const toggleAIChat = () => {
 }
 
 const goToBooking = () => {
-  navigate('/booking')
+  router.push('/booking')
 }
 
 const goToShop = () => {
-  navigate('/shop')
+  router.push('/shop')
 }
 
 const goToForum = () => {
-  navigate('/forum')
+  router.push('/forum')
 }
 </script>
 

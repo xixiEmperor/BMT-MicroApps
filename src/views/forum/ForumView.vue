@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import { useUserStore } from '@/stores'
-import { navigate } from '@/utils/router'
 import { getForumList } from '@/api/forum'
 import { useForumStore } from '@/stores/modules/forum'
 import { formatDateTime } from '@/utils/format'
 import { CaretTop } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const userStore = useUserStore()
 const forumStore = useForumStore()
 // 分类选项卡
@@ -79,18 +80,18 @@ const navigateToPublish = () => {
   if (!userStore.token) {
     // 未登录，跳转到登录页面
     ElMessage.warning('请先登录后再发布文章')
-    navigate('/login')
+    router.push('/login')
     return
   }
 
   // 已登录，在新标签页跳转到发布页面
-  navigate('/publish-post')
+  router.push('/publish-post')
 }
 
 // 跳转到文章详情
 const navigateToDetail = (postId) => {
   // 在新标签页打开
-  navigate(`/post/${postId}`)
+  router.push(`/post/${postId}`)
 }
 
 // 搜索功能（添加防抖）

@@ -15,6 +15,9 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
     "allowJs": true,
     "checkJs": false,
     "jsx": "preserve",
@@ -22,8 +25,7 @@
       "node",
       "element-plus/global"
     ],
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "moduleResolution": "node",
     "strict": false,
     "noEmit": true,
     "isolatedModules": true,

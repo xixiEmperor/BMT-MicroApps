@@ -6,7 +6,6 @@ import { useUserStore } from '@/stores/modules/user'
 // 导入实时连接hooks，在全局进行连接
 import { useRealtime } from '@/hooks/useRealtime'
 import { ElNotification } from 'element-plus'
-import { Telemetry } from '@wfynbzlx666/sdk-telemetry'
 
 const userStore = useUserStore()
 
@@ -20,17 +19,6 @@ const messageListener = (data) => {
 }
 
 onMounted(async () => {
-  Telemetry.init({
-    app: 'BMT-MicroApps',
-    release: import.meta.env.VITE_APP_VERSION ?? 'dev',
-    batchSize: 20,
-    sampleRate: 1,
-    debug: true,
-  })
-  Telemetry.setUser({
-    id: userStore.userinfo?.id,
-    role: userStore.userinfo?.role,
-  })
   useRealtime().onConnectionChange((status) => {
     // 只在断开连接或连接成功的时候显示通知
     if(status !== "disconnected" && status !== "connected") return
