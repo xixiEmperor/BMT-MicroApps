@@ -20,7 +20,7 @@
     "@vueup/vue-quill": "^1.2.0",
     "@wfynbzlx666/sdk-core": "^0.0.2",
     "@wfynbzlx666/sdk-http": "^0.0.4",
-    "@wfynbzlx666/sdk-perf": "^1.0.2",
+    "@wfynbzlx666/sdk-perf": "^1.0.3",
     "@wfynbzlx666/sdk-realtime": "^0.0.1",
     "@wfynbzlx666/sdk-telemetry": "^0.0.1",
     "axios": "^1.8.4",

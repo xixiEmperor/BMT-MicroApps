@@ -21,8 +21,8 @@ importers:
         specifier: ^0.0.4
         version: 0.0.4
       '@wfynbzlx666/sdk-perf':
-        specifier: ^1.0.2
-        version: 1.0.2
+        specifier: ^1.0.3
+        version: 1.0.3
       '@wfynbzlx666/sdk-realtime':
         specifier: ^0.0.1
         version: 0.0.1
@@ -1001,8 +1001,8 @@ packages:
   '@wfynbzlx666/sdk-perf@1.0.0':
     resolution: {integrity: sha512-PQhVJPHDG0BjkztsAu+JnWnfVcgtnjbOzXi5LYIgL4ajnn13fI3ho0W3vWzRA4BRPeApQrWN2ilnif39QxcXaQ==}
 
-  '@wfynbzlx666/sdk-perf@1.0.2':
-    resolution: {integrity: sha512-xnEQA63mYIPghsCMtqR9MyoZcOr+Ez1mccyNcM4U51UxQqyCsSadSV/vJFkqSN8xmt2Kudm855TrRQ2DnJLjjQ==}
+  '@wfynbzlx666/sdk-perf@1.0.3':
+    resolution: {integrity: sha512-LBd3neUJgdKPoHlR/mhH16mivuMI/b/nNkS1d3ea2fKU0e4AvmirfveJl8hnzkR2Zhmb6dPGrS/oej0Yx4Wcmg==}
 
   '@wfynbzlx666/sdk-realtime@0.0.1':
     resolution: {integrity: sha512-V3crABqL93MezYHS0URds89A84mrmxXD2mzWHcTjQoMPAPI1USK6AixuTEIDIWyFQBYvtejdDZ9KJ0af2OG1lA==}
@@ -3984,7 +3984,7 @@ snapshots:
     dependencies:
       web-vitals: 3.5.2
 
-  '@wfynbzlx666/sdk-perf@1.0.2':
+  '@wfynbzlx666/sdk-perf@1.0.3':
     dependencies:
       web-vitals: 3.5.2
 
