@@ -41,7 +41,7 @@ export default defineConfig(({ mode }) => {
       }),
       visualizer({
         filename: 'dist/stats.html',
-        open: import.meta.env.DEV ? true : false,
+        open: process.env.NODE_ENV === 'development' ? true : false,
         gzipSize: true,
         brotliSize: true
       })
