@@ -19,15 +19,6 @@ const messageListener = (data) => {
 }
 
 onMounted(async () => {
-  useRealtime().onConnectionChange((status) => {
-    // 只在断开连接或连接成功的时候显示通知
-    if(status !== "disconnected" && status !== "connected") return
-    ElNotification({
-      title: '实时连接状态变化',
-      message: status,
-      type: status === "disconnected" ? "error" : "success"
-    })
-  })
   await useRealtime().connect()
 
   useRealtime().subscribe(`post_like_to_${userStore.userinfo.username}`, messageListener)

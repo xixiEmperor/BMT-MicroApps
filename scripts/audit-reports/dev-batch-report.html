@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>性能审计报告 - BMT SDK</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .header h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      color: #667eea;
+    }
+
+    .header p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .summary-card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .summary-card .value {
+      font-size: 36px;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 8px;
+    }
+    
+    .summary-card .value.warning {
+      color: #ff4e42;
+    }
+
+    .summary-card .label {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .result-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      border-left: 5px solid #667eea;
+    }
+
+    .result-card.failed {
+      border-left-color: #ff4e42;
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .result-header h3 {
+      font-size: 18px;
+      color: #333;
+      word-break: break-all;
+    }
+
+    .status {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status.failed {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .scores {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 30px;
+      align-items: center;
+    }
+
+    .main-score {
+      border: 4px solid;
+      border-radius: 50%;
+      width: 150px;
+      height: 150px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .main-score .score-value {
+      font-size: 48px;
+      font-weight: bold;
+    }
+
+    .main-score .score-label {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .main-score .score-rating {
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 5px;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 15px;
+      flex: 1;
+    }
+
+    .score-item {
+      text-align: center;
+    }
+
+    .score-grid .score-item {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .score-grid .score-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .score-grid .score-label {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .metrics h4, .opportunities h4 {
+      font-size: 16px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .metrics {
+      margin-bottom: 30px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+    }
+
+    .metric-item {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 5px;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .opportunities ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .opportunities li {
+      padding: 15px;
+      background: #fff9e6;
+      border-left: 3px solid #ffa400;
+      margin-bottom: 12px;
+      border-radius: 4px;
+    }
+
+    .opportunity-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .opportunity-description {
+      font-size: 13px;
+      color: #666;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .savings {
+      background: #ffa400;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+      margin-left: 10px;
+    }
+
+    .lcp-screenshot {
+      margin-bottom: 30px;
+    }
+
+    .lcp-screenshot h4 {
+      font-size: 16px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .screenshot-container {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .screenshot-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 10px;
+    }
+
+    .screenshot-hint {
+      font-size: 13px;
+      color: #666;
+      margin: 0;
+      font-style: italic;
+    }
+
+    .error-message {
+      padding: 20px;
+      background: #f8d7da;
+      border-left: 4px solid #721c24;
+      border-radius: 4px;
+      color: #721c24;
+      margin-bottom: 20px;
+    }
+
+    .result-footer {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 15px;
+      border-top: 2px solid #f0f0f0;
+      font-size: 13px;
+      color: #666;
+    }
+
+    @media (max-width: 768px) {
+      .scores {
+        flex-direction: column;
+      }
+      
+      .result-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🚀 性能审计报告</h1>
+      <p>由 @wfynbzlx666/sdk-perf 生成 | 生成时间: 2025/10/17 16:20:26</p>
+    </div>
+
+    <div class="summary">
+      <div class="summary-card">
+        <div class="value">6</div>
+        <div class="label">审计页面数</div>
+      </div>
+      <div class="summary-card">
+        <div class="value" style="color: #0cce6b">6</div>
+        <div class="label">成功</div>
+      </div>
+      <div class="summary-card">
+        <div class="value" style="color: #ff4e42">0</div>
+        <div class="label">失败</div>
+      </div>
+      <div class="summary-card">
+        <div class="value">0.0</div>
+        <div class="label">平均性能分数</div>
+      </div>
+    </div>
+
+    
+      <div class="result-card success">
+        <div class="result-header">
+          <h3>http://localhost:5173/#/home</h3>
+          <span class="status success">
+            ✓ 成功
+          </span>
+        </div>
+        
+        
+          <div class="scores">
+            <div class="score-item main-score" style="border-color: #999">
+              <div class="score-value" style="color: #999">N/A</div>
+              <div class="score-label">性能分数</div>
+              <div class="score-rating" style="color: #999">N/A</div>
+            </div>
+            
+            <div class="score-grid">
+              
+              
+              
+            </div>
+          </div>
+
+          <div class="metrics">
+            <h4>📊 Core Web Vitals</h4>
+            <div class="metrics-grid">
+              
+                <div class="metric-item">
+                  <div class="metric-value">9.17s</div>
+                  <div class="metric-label">LCP</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">28ms</div>
+                  <div class="metric-label">FID</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">0.000</div>
+                  <div class="metric-label">CLS</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">4.55s</div>
+                  <div class="metric-label">FCP</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">2ms</div>
+                  <div class="metric-label">TTFB</div>
+                </div>
+              
+              
+            </div>
+          </div>
+
+          
+            <div class="lcp-screenshot">
+              <h4>🎯 LCP 最大内容元素截图</h4>
+              <div class="screenshot-container">
+                <pre>最大内容元素为：<img alt="" src="/src/assets/index_img.png" class="el-image__inner" style="object-fit: contain;"></pre>
+                <p class="screenshot-hint">优化此区域可以显著提升 LCP 指标</p>
+              </div>
+            </div>
+          
+
+          
+        <div class="opportunities">
+          <h4>🎯 优化建议 (7)</h4>
+          <ul>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>启用文本压缩</strong>
+                  <span class="savings">可节省 5.70s</span>
+                </div>
+                <p class="opportunity-description">文本资源应该使用压缩（gzip、deflate 或 brotli）来最小化总网络字节数。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>压缩 JavaScript</strong>
+                  <span class="savings">可节省 3.88s</span>
+                </div>
+                <p class="opportunity-description">压缩 JavaScript 文件可以减小负载大小和脚本解析时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>移除未使用的 JavaScript</strong>
+                  <span class="savings">可节省 2.32s</span>
+                </div>
+                <p class="opportunity-description">减少未使用的 JavaScript 代码，降低网络传输时间和脚本解析时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>使用新一代图片格式</strong>
+                  <span class="savings">可节省 0.80s</span>
+                </div>
+                <p class="opportunity-description">WebP 和 AVIF 等图片格式通常比 PNG 或 JPEG 压缩效果更好，可以加快下载速度并减少数据消耗。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>使用合适尺寸的图片</strong>
+                  <span class="savings">可节省 0.30s</span>
+                </div>
+                <p class="opportunity-description">提供不同尺寸的图片以节省移动数据并提高加载时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>移除重复的 JavaScript 模块</strong>
+                  <span class="savings">可节省 0.04s</span>
+                </div>
+                <p class="opportunity-description">删除大型的重复 JavaScript 模块以减少不必要的字节消耗。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>减少服务器响应时间（TTFB）</strong>
+                  <span class="savings">可节省 0.00s</span>
+                </div>
+                <p class="opportunity-description">保持服务器响应时间低，因为高 TTFB 会延迟所有后续资源的加载。</p>
+              </li>
+            
+          </ul>
+        </div>
+      
+        
+        
+        <div class="result-footer">
+          <span>📅 2025/10/17 16:19:07</span>
+          <span>⏱️ 耗时: 11.08s</span>
+        </div>
+      </div>
+    
+      <div class="result-card success">
+        <div class="result-header">
+          <h3>http://localhost:5173/#/booking</h3>
+          <span class="status success">
+            ✓ 成功
+          </span>
+        </div>
+        
+        
+          <div class="scores">
+            <div class="score-item main-score" style="border-color: #999">
+              <div class="score-value" style="color: #999">N/A</div>
+              <div class="score-label">性能分数</div>
+              <div class="score-rating" style="color: #999">N/A</div>
+            </div>
+            
+            <div class="score-grid">
+              
+              
+              
+            </div>
+          </div>
+
+          <div class="metrics">
+            <h4>📊 Core Web Vitals</h4>
+            <div class="metrics-grid">
+              
+                <div class="metric-item">
+                  <div class="metric-value">9.42s</div>
+                  <div class="metric-label">LCP</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">74ms</div>
+                  <div class="metric-label">FID</div>
+                </div>
+              
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">4.30s</div>
+                  <div class="metric-label">FCP</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">4ms</div>
+                  <div class="metric-label">TTFB</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">24ms</div>
+                  <div class="metric-label">TBT</div>
+                </div>
+              
+            </div>
+          </div>
+
+          
+            <div class="lcp-screenshot">
+              <h4>🎯 LCP 最大内容元素截图</h4>
+              <div class="screenshot-container">
+                <pre>最大内容元素为：<p data-v-9bb36ef1="" style="font-size: 22px;"></pre>
+                <p class="screenshot-hint">优化此区域可以显著提升 LCP 指标</p>
+              </div>
+            </div>
+          
+
+          
+        <div class="opportunities">
+          <h4>🎯 优化建议 (4)</h4>
+          <ul>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>启用文本压缩</strong>
+                  <span class="savings">可节省 5.99s</span>
+                </div>
+                <p class="opportunity-description">文本资源应该使用压缩（gzip、deflate 或 brotli）来最小化总网络字节数。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>压缩 JavaScript</strong>
+                  <span class="savings">可节省 4.07s</span>
+                </div>
+                <p class="opportunity-description">压缩 JavaScript 文件可以减小负载大小和脚本解析时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>移除未使用的 JavaScript</strong>
+                  <span class="savings">可节省 2.20s</span>
+                </div>
+                <p class="opportunity-description">减少未使用的 JavaScript 代码，降低网络传输时间和脚本解析时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>减少服务器响应时间（TTFB）</strong>
+                  <span class="savings">可节省 0.00s</span>
+                </div>
+                <p class="opportunity-description">保持服务器响应时间低，因为高 TTFB 会延迟所有后续资源的加载。</p>
+              </li>
+            
+          </ul>
+        </div>
+      
+        
+        
+        <div class="result-footer">
+          <span>📅 2025/10/17 16:19:21</span>
+          <span>⏱️ 耗时: 14.07s</span>
+        </div>
+      </div>
+    
+      <div class="result-card success">
+        <div class="result-header">
+          <h3>http://localhost:5173/#/shop</h3>
+          <span class="status success">
+            ✓ 成功
+          </span>
+        </div>
+        
+        
+          <div class="scores">
+            <div class="score-item main-score" style="border-color: #999">
+              <div class="score-value" style="color: #999">N/A</div>
+              <div class="score-label">性能分数</div>
+              <div class="score-rating" style="color: #999">N/A</div>
+            </div>
+            
+            <div class="score-grid">
+              
+              
+              
+            </div>
+          </div>
+
+          <div class="metrics">
+            <h4>📊 Core Web Vitals</h4>
+            <div class="metrics-grid">
+              
+                <div class="metric-item">
+                  <div class="metric-value">15.89s</div>
+                  <div class="metric-label">LCP</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">131ms</div>
+                  <div class="metric-label">FID</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">0.000</div>
+                  <div class="metric-label">CLS</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">7.60s</div>
+                  <div class="metric-label">FCP</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">4ms</div>
+                  <div class="metric-label">TTFB</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">105ms</div>
+                  <div class="metric-label">TBT</div>
+                </div>
+              
+            </div>
+          </div>
+
+          
+            <div class="lcp-screenshot">
+              <h4>🎯 LCP 最大内容元素截图</h4>
+              <div class="screenshot-container">
+                <pre>最大内容元素为：<img alt="" src="/src/assets/whlg_logo.png" class="el-image__inner" style="object-fit: contain;"></pre>
+                <p class="screenshot-hint">优化此区域可以显著提升 LCP 指标</p>
+              </div>
+            </div>
+          
+
+          
+        <div class="opportunities">
+          <h4>🎯 优化建议 (6)</h4>
+          <ul>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>启用文本压缩</strong>
+                  <span class="savings">可节省 4.96s</span>
+                </div>
+                <p class="opportunity-description">文本资源应该使用压缩（gzip、deflate 或 brotli）来最小化总网络字节数。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>移除未使用的 JavaScript</strong>
+                  <span class="savings">可节省 4.51s</span>
+                </div>
+                <p class="opportunity-description">减少未使用的 JavaScript 代码，降低网络传输时间和脚本解析时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>避免多次页面重定向</strong>
+                  <span class="savings">可节省 4.42s</span>
+                </div>
+                <p class="opportunity-description">重定向会在页面加载前引入额外的延迟。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>压缩 JavaScript</strong>
+                  <span class="savings">可节省 4.37s</span>
+                </div>
+                <p class="opportunity-description">压缩 JavaScript 文件可以减小负载大小和脚本解析时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>使用合适尺寸的图片</strong>
+                  <span class="savings">可节省 0.05s</span>
+                </div>
+                <p class="opportunity-description">提供不同尺寸的图片以节省移动数据并提高加载时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>减少服务器响应时间（TTFB）</strong>
+                  <span class="savings">可节省 0.00s</span>
+                </div>
+                <p class="opportunity-description">保持服务器响应时间低，因为高 TTFB 会延迟所有后续资源的加载。</p>
+              </li>
+            
+          </ul>
+        </div>
+      
+        
+        
+        <div class="result-footer">
+          <span>📅 2025/10/17 16:19:45</span>
+          <span>⏱️ 耗时: 24.57s</span>
+        </div>
+      </div>
+    
+      <div class="result-card success">
+        <div class="result-header">
+          <h3>http://localhost:5173/#/login</h3>
+          <span class="status success">
+            ✓ 成功
+          </span>
+        </div>
+        
+        
+          <div class="scores">
+            <div class="score-item main-score" style="border-color: #999">
+              <div class="score-value" style="color: #999">N/A</div>
+              <div class="score-label">性能分数</div>
+              <div class="score-rating" style="color: #999">N/A</div>
+            </div>
+            
+            <div class="score-grid">
+              
+              
+              
+            </div>
+          </div>
+
+          <div class="metrics">
+            <h4>📊 Core Web Vitals</h4>
+            <div class="metrics-grid">
+              
+                <div class="metric-item">
+                  <div class="metric-value">14.92s</div>
+                  <div class="metric-label">LCP</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">61ms</div>
+                  <div class="metric-label">FID</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">0.000</div>
+                  <div class="metric-label">CLS</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">7.52s</div>
+                  <div class="metric-label">FCP</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">4ms</div>
+                  <div class="metric-label">TTFB</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">6ms</div>
+                  <div class="metric-label">TBT</div>
+                </div>
+              
+            </div>
+          </div>
+
+          
+            <div class="lcp-screenshot">
+              <h4>🎯 LCP 最大内容元素截图</h4>
+              <div class="screenshot-container">
+                <pre>最大内容元素为：<div data-v-c1ecada0="" class="el-col el-col-12 bg"></pre>
+                <p class="screenshot-hint">优化此区域可以显著提升 LCP 指标</p>
+              </div>
+            </div>
+          
+
+          
+        <div class="opportunities">
+          <h4>🎯 优化建议 (6)</h4>
+          <ul>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>移除未使用的 JavaScript</strong>
+                  <span class="savings">可节省 4.97s</span>
+                </div>
+                <p class="opportunity-description">减少未使用的 JavaScript 代码，降低网络传输时间和脚本解析时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>启用文本压缩</strong>
+                  <span class="savings">可节省 4.81s</span>
+                </div>
+                <p class="opportunity-description">文本资源应该使用压缩（gzip、deflate 或 brotli）来最小化总网络字节数。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>避免多次页面重定向</strong>
+                  <span class="savings">可节省 4.55s</span>
+                </div>
+                <p class="opportunity-description">重定向会在页面加载前引入额外的延迟。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>压缩 JavaScript</strong>
+                  <span class="savings">可节省 4.25s</span>
+                </div>
+                <p class="opportunity-description">压缩 JavaScript 文件可以减小负载大小和脚本解析时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>移除重复的 JavaScript 模块</strong>
+                  <span class="savings">可节省 0.04s</span>
+                </div>
+                <p class="opportunity-description">删除大型的重复 JavaScript 模块以减少不必要的字节消耗。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>减少服务器响应时间（TTFB）</strong>
+                  <span class="savings">可节省 0.00s</span>
+                </div>
+                <p class="opportunity-description">保持服务器响应时间低，因为高 TTFB 会延迟所有后续资源的加载。</p>
+              </li>
+            
+          </ul>
+        </div>
+      
+        
+        
+        <div class="result-footer">
+          <span>📅 2025/10/17 16:20:04</span>
+          <span>⏱️ 耗时: 18.78s</span>
+        </div>
+      </div>
+    
+      <div class="result-card success">
+        <div class="result-header">
+          <h3>http://localhost:5173/#/forum</h3>
+          <span class="status success">
+            ✓ 成功
+          </span>
+        </div>
+        
+        
+          <div class="scores">
+            <div class="score-item main-score" style="border-color: #999">
+              <div class="score-value" style="color: #999">N/A</div>
+              <div class="score-label">性能分数</div>
+              <div class="score-rating" style="color: #999">N/A</div>
+            </div>
+            
+            <div class="score-grid">
+              
+              
+              
+            </div>
+          </div>
+
+          <div class="metrics">
+            <h4>📊 Core Web Vitals</h4>
+            <div class="metrics-grid">
+              
+                <div class="metric-item">
+                  <div class="metric-value">12.98s</div>
+                  <div class="metric-label">LCP</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">53ms</div>
+                  <div class="metric-label">FID</div>
+                </div>
+              
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">7.23s</div>
+                  <div class="metric-label">FCP</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">2ms</div>
+                  <div class="metric-label">TTFB</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">3ms</div>
+                  <div class="metric-label">TBT</div>
+                </div>
+              
+            </div>
+          </div>
+
+          
+            <div class="lcp-screenshot">
+              <h4>🎯 LCP 最大内容元素截图</h4>
+              <div class="screenshot-container">
+                <pre>最大内容元素为：<img alt="" src="/src/assets/whlg_logo.png" class="el-image__inner" style="object-fit: contain;"></pre>
+                <p class="screenshot-hint">优化此区域可以显著提升 LCP 指标</p>
+              </div>
+            </div>
+          
+
+          
+        <div class="opportunities">
+          <h4>🎯 优化建议 (6)</h4>
+          <ul>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>启用文本压缩</strong>
+                  <span class="savings">可节省 3.93s</span>
+                </div>
+                <p class="opportunity-description">文本资源应该使用压缩（gzip、deflate 或 brotli）来最小化总网络字节数。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>移除未使用的 JavaScript</strong>
+                  <span class="savings">可节省 3.74s</span>
+                </div>
+                <p class="opportunity-description">减少未使用的 JavaScript 代码，降低网络传输时间和脚本解析时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>避免多次页面重定向</strong>
+                  <span class="savings">可节省 3.62s</span>
+                </div>
+                <p class="opportunity-description">重定向会在页面加载前引入额外的延迟。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>压缩 JavaScript</strong>
+                  <span class="savings">可节省 3.49s</span>
+                </div>
+                <p class="opportunity-description">压缩 JavaScript 文件可以减小负载大小和脚本解析时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>移除重复的 JavaScript 模块</strong>
+                  <span class="savings">可节省 0.02s</span>
+                </div>
+                <p class="opportunity-description">删除大型的重复 JavaScript 模块以减少不必要的字节消耗。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>减少服务器响应时间（TTFB）</strong>
+                  <span class="savings">可节省 0.00s</span>
+                </div>
+                <p class="opportunity-description">保持服务器响应时间低，因为高 TTFB 会延迟所有后续资源的加载。</p>
+              </li>
+            
+          </ul>
+        </div>
+      
+        
+        
+        <div class="result-footer">
+          <span>📅 2025/10/17 16:20:16</span>
+          <span>⏱️ 耗时: 12.43s</span>
+        </div>
+      </div>
+    
+      <div class="result-card success">
+        <div class="result-header">
+          <h3>http://localhost:5173/#/publish-post</h3>
+          <span class="status success">
+            ✓ 成功
+          </span>
+        </div>
+        
+        
+          <div class="scores">
+            <div class="score-item main-score" style="border-color: #999">
+              <div class="score-value" style="color: #999">N/A</div>
+              <div class="score-label">性能分数</div>
+              <div class="score-rating" style="color: #999">N/A</div>
+            </div>
+            
+            <div class="score-grid">
+              
+              
+              
+            </div>
+          </div>
+
+          <div class="metrics">
+            <h4>📊 Core Web Vitals</h4>
+            <div class="metrics-grid">
+              
+                <div class="metric-item">
+                  <div class="metric-value">8.56s</div>
+                  <div class="metric-label">LCP</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">61ms</div>
+                  <div class="metric-label">FID</div>
+                </div>
+              
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">3.84s</div>
+                  <div class="metric-label">FCP</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">4ms</div>
+                  <div class="metric-label">TTFB</div>
+                </div>
+              
+              
+                <div class="metric-item">
+                  <div class="metric-value">11ms</div>
+                  <div class="metric-label">TBT</div>
+                </div>
+              
+            </div>
+          </div>
+
+          
+            <div class="lcp-screenshot">
+              <h4>🎯 LCP 最大内容元素截图</h4>
+              <div class="screenshot-container">
+                <pre>最大内容元素为：<img alt="" src="/src/assets/whlg_logo.png" class="el-image__inner" style="object-fit: contain;"></pre>
+                <p class="screenshot-hint">优化此区域可以显著提升 LCP 指标</p>
+              </div>
+            </div>
+          
+
+          
+        <div class="opportunities">
+          <h4>🎯 优化建议 (7)</h4>
+          <ul>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>启用文本压缩</strong>
+                  <span class="savings">可节省 6.08s</span>
+                </div>
+                <p class="opportunity-description">文本资源应该使用压缩（gzip、deflate 或 brotli）来最小化总网络字节数。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>压缩 JavaScript</strong>
+                  <span class="savings">可节省 3.98s</span>
+                </div>
+                <p class="opportunity-description">压缩 JavaScript 文件可以减小负载大小和脚本解析时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>移除未使用的 JavaScript</strong>
+                  <span class="savings">可节省 2.44s</span>
+                </div>
+                <p class="opportunity-description">减少未使用的 JavaScript 代码，降低网络传输时间和脚本解析时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>避免提供旧版 JavaScript 给现代浏览器</strong>
+                  <span class="savings">可节省 0.04s</span>
+                </div>
+                <p class="opportunity-description">Polyfill 和转译对于旧版浏览器是必要的，但对于现代浏览器则会减慢页面加载速度。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>使用新一代图片格式</strong>
+                  <span class="savings">可节省 0.03s</span>
+                </div>
+                <p class="opportunity-description">WebP 和 AVIF 等图片格式通常比 PNG 或 JPEG 压缩效果更好，可以加快下载速度并减少数据消耗。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>使用合适尺寸的图片</strong>
+                  <span class="savings">可节省 0.03s</span>
+                </div>
+                <p class="opportunity-description">提供不同尺寸的图片以节省移动数据并提高加载时间。</p>
+              </li>
+            
+              <li>
+                <div class="opportunity-header">
+                  <strong>减少服务器响应时间（TTFB）</strong>
+                  <span class="savings">可节省 0.00s</span>
+                </div>
+                <p class="opportunity-description">保持服务器响应时间低，因为高 TTFB 会延迟所有后续资源的加载。</p>
+              </li>
+            
+          </ul>
+        </div>
+      
+        
+        
+        <div class="result-footer">
+          <span>📅 2025/10/17 16:20:26</span>
+          <span>⏱️ 耗时: 9.57s</span>
+        </div>
+      </div>
+    
+  </div>
+</body>
+</html>

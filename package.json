@@ -20,7 +20,7 @@
     "@vueup/vue-quill": "^1.2.0",
     "@wfynbzlx666/sdk-core": "^0.0.2",
     "@wfynbzlx666/sdk-http": "^0.0.4",
-    "@wfynbzlx666/sdk-perf": "^1.0.3",
+    "@wfynbzlx666/sdk-perf-spa": "^1.0.1",
     "@wfynbzlx666/sdk-realtime": "^0.0.1",
     "@wfynbzlx666/sdk-telemetry": "^0.0.1",
     "axios": "^1.8.4",
@@ -33,6 +33,7 @@
     "vue": "^3.5.13",
     "vue-element-plus-x": "^1.0.6",
     "vue-router": "^4.5.0",
+    "vue3-lazyload": "^0.3.8",
     "wujie": "^1.0.29",
     "wujie-vue3": "^1.0.29"
   },
@@ -47,21 +48,29 @@
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.0.0",
     "@vue/tsconfig": "^0.7.0",
+    "autoprefixer": "^10.4.21",
     "chalk": "4.1.2",
     "eslint": "^9.22.0",
     "eslint-plugin-vue": "~10.0.0",
     "globals": "^16.0.0",
     "less": "^4.2.2",
     "less-loader": "^12.2.0",
+    "postcss": "^8.5.6",
     "prettier": "3.5.3",
+    "puppeteer": "^24.2.1",
+    "rollup-plugin-visualizer": "^6.0.5",
+    "tailwindcss": "3.4.0",
+    "terser": "^5.44.0",
     "typescript": "^5.6.0",
     "unplugin-auto-import": "^19.1.1",
     "unplugin-vue-components": "^28.4.1",
     "vite": "^6.2.1",
     "vite-plugin-vue-devtools": "^7.7.2",
-    "vue-tsc": "^2.0.0",
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.6",
-    "tailwindcss": "3.4.0"
+    "vue-tsc": "^2.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@wfynbzlx666/sdk-perf-spa": "link:../../react workspace/BMT-Central-SDK/packages/sdk-perf-spa"
+    }
   }
 }

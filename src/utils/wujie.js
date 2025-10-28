@@ -49,7 +49,7 @@ export function initWujie() {
     const reactAdminConfig = wujieConfig.apps['react-admin']
 
     // 根据环境变量决定使用开发还是生产地址
-    const appUrl = process.env.NODE_ENV === 'development'
+    const appUrl = import.meta.env.DEV
       ? reactAdminConfig.devUrl
       : reactAdminConfig.prodUrl
 
@@ -101,7 +101,7 @@ export function initWujie() {
  */
 export function startReactAdmin(container, props = {}) {
   const reactAdminConfig = wujieConfig.apps['react-admin']
-  const appUrl = process.env.NODE_ENV === 'development'
+  const appUrl = import.meta.env.DEV
     ? reactAdminConfig.devUrl
     : reactAdminConfig.prodUrl
 

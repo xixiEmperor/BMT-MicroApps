@@ -17,6 +17,8 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import directives from './utils/directives'
 import { Telemetry } from '@wfynbzlx666/sdk-telemetry'
+// import { Perf } from '@wfynbzlx666/sdk-perf'
+// import { nextTick } from 'vue'
 
 // 导入无界微前端配置 - 用于集成React管理后台
 import { initWujie } from '@/utils/wujie'
@@ -56,6 +58,27 @@ Telemetry.init({
   sampleRate: 1,
   debug: true,
 })
+
+
+// try {
+//   Perf.init({
+//     enableMPA:false,
+//     sampleRate: 1,
+//     autoEnableWebVitals: true,
+//     enableDetailedMonitoring: false,
+//     enableAdvancedMetrics: false,
+//     onMetric: (metric) => {
+//       console.log(metric)
+//     }
+//   })
+// } catch (error) {
+//   console.error('性能分析初始化失败:', error)
+// }
+
+
+// window.addEventListener('unload', () => {
+//   Perf.stop()
+// })
 
 // 挂载Vue应用到#app元素
 // 这是应用启动的最后一步

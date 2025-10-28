@@ -257,6 +257,7 @@ const goToForgetPassword = () => {
             v-model="formModel.username"
             :prefix-icon="User"
             placeholder="请输入用户名"
+            id="username-input"
           ></el-input>
         </el-form-item>
         <el-form-item prop="password">
@@ -266,6 +267,7 @@ const goToForgetPassword = () => {
             :prefix-icon="Lock"
             type="password"
             placeholder="请输入密码"
+            id="password-input"
           ></el-input>
         </el-form-item>
         <el-form-item class="flex">
@@ -277,7 +279,7 @@ const goToForgetPassword = () => {
           </div>
         </el-form-item>
         <el-form-item>
-          <el-button @click="login" class="button" type="primary" auto-insert-space>登录</el-button>
+          <el-button id="login-btn" @click="login" class="button" type="primary" auto-insert-space>登录</el-button>
         </el-form-item>
         <el-form-item class="flex">
           <el-link type="info" :underline="false" @click="isRegister = true"> 注册 → </el-link>

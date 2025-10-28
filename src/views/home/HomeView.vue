@@ -33,7 +33,7 @@ const goToForum = () => {
 
 <template>
   <div class="home-container">
-    <el-image :src="imgUrl" alt="" fit="contain" class="hero-image" />
+    <el-image :src="imgUrl" :lazy="true" alt="" fit="contain" class="hero-image" />
     <h2>欢迎使用南湖校区羽毛球场预定系统</h2>
 
     <div class="info-section">

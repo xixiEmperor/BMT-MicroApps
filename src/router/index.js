@@ -14,9 +14,8 @@
 
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { useUserStore } from '@/stores'
-import { nextTick } from 'vue'
-import { Perf } from '@wfynbzlx666/sdk-perf'
-import { Telemetry } from '@wfynbzlx666/sdk-telemetry'
+// 暂时注释掉性能监控，因为它依赖puppeteer等Node.js包
+// import { Perf } from '@wfynbzlx666/sdk-perf'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -163,13 +162,14 @@ const router = createRouter({
 
 // 全局前置守卫，检查用户是否已登录
 router.beforeEach((to, from, next) => {
-  if (Perf.isInitialized()) {
-    Perf.stop()
-  }
   // 设置页面标题
   if (to.meta.title) {
     document.title = to.meta.title
   }
+
+  // if(Perf.isInitialized()) {
+  //   Perf.stop()
+  // }
 
   // 判断路由是否需要登录
   const userStore = useUserStore()
@@ -226,31 +226,8 @@ router.beforeEach((to, from, next) => {
 router.afterEach((to, from) => {
   // 记录路由变化
   console.log(`路由从 ${from.path} 跳转到 ${to.path}`)
-
-  // 使用 Vue 的 nextTick 确保 DOM 更新完成
-  nextTick(() => {
-    // 再使用 requestAnimationFrame 确保渲染完成
-    requestAnimationFrame(() => {
-      // 延迟一帧，确保所有异步组件都加载完成
-      requestAnimationFrame(() => {
-        // 现在可以安全地进行性能分析
-        try {
-          Perf.init({
-            sampleRate: 1,
-            autoEnableWebVitals: true,
-            enableDetailedMonitoring: false,
-            enableAdvancedMetrics: false,
-            onMetric: (metric) => {
-              console.log(metric)
-              Telemetry.trackPageView(to.path, metric)
-            }
-          })
-        } catch (error) {
-          console.error('性能分析初始化失败:', error)
-        }
-      })
-    })
-  })
+  // 暂时注释掉性能监控
+  // Perf.reportRouteChange()
 })
 
 export default router
