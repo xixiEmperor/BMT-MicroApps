@@ -67,10 +67,5 @@
     "vite": "^6.2.1",
     "vite-plugin-vue-devtools": "^7.7.2",
     "vue-tsc": "^2.0.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "@wfynbzlx666/sdk-perf-spa": "link:../../react workspace/BMT-Central-SDK/packages/sdk-perf-spa"
-    }
   }
 }

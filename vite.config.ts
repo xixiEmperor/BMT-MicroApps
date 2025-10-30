@@ -54,7 +54,7 @@ export default defineConfig(({ mode }) => {
         // '@wfynbzlx666/sdk-perf':path.resolve(__dirname, '../../react workspace/BMT-Central-SDK/packages/sdk-perf/src/index'),
         // '@wfynbzlx666/sdk-core': path.resolve(__dirname, '../../react workspace/BMT-Central-SDK/packages/sdk-core/src/index'),
         // '@wfynbzlx666/sdk-telemetry': path.resolve(__dirname, '../../react workspace/BMT-Central-SDK/packages/sdk-telemetry/src/index'),
-        '@wfynbzlx666/sdk-perf-spa': path.resolve(__dirname, '../../react workspace/BMT-Central-SDK/packages/sdk-perf-spa/src/index'),
+        // '@wfynbzlx666/sdk-perf-spa': path.resolve(__dirname, '../../react workspace/BMT-Central-SDK/packages/sdk-perf-spa/src/index'),
       },
     },
     // 依赖优化配置

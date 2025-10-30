@@ -1,13 +1,14 @@
-import { auditSinglePage } from '@wfynbzlx666/sdk-perf-spa'
+import { auditPages } from '@wfynbzlx666/sdk-perf-spa'
 
-const summary = await auditSinglePage({
-  url: 'http://localhost:5173/#/home',
-  // 'http://localhost:5173/#/booking',
-  // 'http://localhost:5173/#/shop',
-  // 'http://localhost:5173/#/login',
-  // 'http://localhost:5173/#/forum',
-  // 'http://localhost:5173/#/publish-post',
-  // ],
+const summary = await auditPages({
+  urls: [
+    'http://localhost:4173/#/home',
+    'http://localhost:4173/#/booking',
+    'http://localhost:4173/#/shop',
+    'http://localhost:4173/#/login',
+    'http://localhost:4173/#/forum',
+    'http://localhost:4173/#/publish-post',
+  ],
   lighthouse: {
     formFactor: 'desktop',
     categories: ['performance,accessibility,best-practices,seo']

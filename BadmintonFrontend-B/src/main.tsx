@@ -63,7 +63,7 @@ if (window.__POWERED_BY_WUJIE__) {
     const props = window.__WUJIE?.props || {}
     render(props)
   }
-  
+
   window.__WUJIE_UNMOUNT = () => {
     unmount()
   }
