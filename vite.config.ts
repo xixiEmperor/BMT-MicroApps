@@ -108,11 +108,6 @@ export default defineConfig(({ mode }) => {
         mangle: {
           keep_classnames: true,
           keep_fnames: true
-          // 混淆变量名
-          // properties: {
-          //   // 混淆属性名（谨慎使用）
-          //   regex: /^_/
-          // }
         },
         format: {
           // 移除注释

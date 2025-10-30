@@ -26,7 +26,7 @@ const wujieConfig = {
       // 开发环境地址 - React项目运行在5000端口
       devUrl: 'http://localhost:5500',
       // 生产环境地址 - 静态资源路径，将在nginx中配置
-      prodUrl: 'https://xixiemperor.github.io/BMT-MicroApps/BadmintonFrontend-B/',
+      prodUrl: 'https://xixiemperor.github.io/BadmintonFrontend-B/',
       // 预加载配置 - 提前加载子应用资源，提升首次访问速度
       preload: true,
       // 路由同步 - wujie将子应用路由编码后作为父应用的查询参数
