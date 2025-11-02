@@ -40,8 +40,8 @@ export default defineConfig(({ mode }) => {
         include: [/\.vue$/, /\.vue\?vue/],
       }),
       visualizer({
-        filename: 'dist/stats.html',
-        open: process.env.NODE_ENV === 'development' ? true : false,
+        filename: 'stats.html',
+        open: true,
         gzipSize: true,
         brotliSize: true
       })
@@ -79,6 +79,13 @@ export default defineConfig(({ mode }) => {
       cssCodeSplit: true,
       sourcemap: false,
       reportCompressedSize: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'element-plus': ['element-plus'],
+          }
+        }
+      },
       /**
        * 代码压缩器
        * @default 'esbuild'

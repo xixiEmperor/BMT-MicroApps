@@ -149,13 +149,6 @@ const router = createRouter({
       path: '/login',
       component: () => import('@/views/login/Login.vue'),
       meta: { title: '登录/注册' },
-      children: [
-        {
-          path: 'forget-password',
-          component: () => import('@/views/login/ForgetPassword.vue'),
-          meta: { title: '找回密码' },
-        },
-      ],
     },
   ],
 })

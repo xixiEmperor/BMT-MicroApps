@@ -7,7 +7,7 @@ const router = useRouter()
 let isRefreshing = false
 
 initHttp({
-  baseURL:'http://localhost:8080',//import.meta.env.VITE_API_URL,
+  baseURL:'http://8.162.3.209:8080',//import.meta.env.VITE_API_URL,
   timeout: 10000,
   plugins: [
     authPlugin({
@@ -16,17 +16,17 @@ initHttp({
         if (isRefreshing) {
           return
         }
-      
+
         isRefreshing = true
-      
+
         const userStore = useUserStore()
-      
+
         // 显示提示信息
         if(!userStore.userinfo.token){
           ElMessage.warning('请先登录')
         }else{
           ElMessage.warning('登录已过期，请重新登录')
-      
+
           // 清除过期的token和用户信息
           const userStore = useUserStore()
           userStore.logout()
@@ -40,7 +40,7 @@ initHttp({
             query: { redirect: currentPath }
           })
         }
-      
+
         // 重置刷新状态
         setTimeout(() => {
           isRefreshing = false

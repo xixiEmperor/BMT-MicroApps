@@ -6,10 +6,9 @@ export default {
 <script setup>
 import { User, Lock, Message } from '@element-plus/icons-vue'
 import { ref, watch } from 'vue'
-import { authRegisterService, authLoginService, authSendCodeService } from '@/api/auth'
+import { authRegisterService, authLoginService } from '@/api/auth'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores'
-import VerificationCodeInput from '@/components/VerificationCodeInput.vue'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -18,7 +17,6 @@ const formModel = ref({
   username: '',
   password: '',
   email: '', // 新增邮箱字段
-  verificationCode: '', // 新增验证码字段
 })
 
 // 验证码相关状态
@@ -52,10 +50,6 @@ const rules = {
     { required: true, message: '请输入邮箱', trigger: 'blur' },
     { type: 'email', message: '请输入有效的邮箱地址', trigger: 'blur' },
   ],
-  verificationCode: [
-    { required: true, message: '请输入验证码', trigger: 'blur' },
-    { len: 6, message: '请输入6位验证码', trigger: 'blur' },
-  ],
 }
 const form = ref()
 
@@ -66,7 +60,6 @@ watch(isRegister, () => {
     password: '',
     repassword: '',
     email: '', // 重置邮箱字段
-    verificationCode: '', // 重置验证码字段
   }
   // 清除倒计时
   if (timer) {
@@ -76,43 +69,6 @@ watch(isRegister, () => {
   isSendingCode.value = false
   countdown.value = 0
 })
-
-// 发送验证码
-const sendVerificationCode = async () => {
-  try {
-    // 验证邮箱格式
-    await form.value.validateField(['email'])
-
-    isSendingCode.value = true
-
-    // 调用发送验证码接口
-    const res = await authSendCodeService({
-      email: formModel.value.email,
-      type: 'register'
-    })
-
-    if (res.data.code === 0) {
-      ElMessage.success('验证码已发送至您的邮箱')
-      // 启动倒计时
-      countdown.value = 60
-      timer = setInterval(() => {
-        countdown.value--
-        if (countdown.value <= 0) {
-          clearInterval(timer)
-          timer = null
-          isSendingCode.value = false
-        }
-      }, 1000)
-    } else {
-      ElMessage.error(res.data.msg || '发送验证码失败')
-      isSendingCode.value = false
-    }
-  } catch (error) {
-    console.error('发送验证码错误:', error)
-    ElMessage.error('发送验证码失败，请检查邮箱格式')
-    isSendingCode.value = false
-  }
-}
 
 // 注册
 const register = async () => {
@@ -167,11 +123,6 @@ const login = async () => {
     ElMessage.error(`登录失败: ${error.response?.data?.message || error.message || '未知错误'}`)
   }
 }
-
-// 修改忘记密码的跳转路径
-const goToForgetPassword = () => {
-  router.push('/login/forget-password')
-}
 </script>
 
 <template>
@@ -223,22 +174,6 @@ const goToForgetPassword = () => {
             placeholder="请输入邮箱"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="verificationCode">
-          <div class="verify-code-section">
-            <VerificationCodeInput
-              v-model="formModel.verificationCode"
-              :length="6"
-            />
-            <el-button
-              type="primary"
-              :disabled="isSendingCode || countdown > 0"
-              @click="sendVerificationCode"
-              class="verify-code-btn"
-            >
-              {{ countdown > 0 ? `${countdown}秒后重新获取` : '获取验证码' }}
-            </el-button>
-          </div>
-        </el-form-item>
         <el-form-item>
           <el-button @click="register" class="button" type="primary" auto-insert-space>
             注册
@@ -269,14 +204,6 @@ const goToForgetPassword = () => {
             placeholder="请输入密码"
             id="password-input"
           ></el-input>
-        </el-form-item>
-        <el-form-item class="flex">
-          <div class="flex">
-            <el-checkbox>记住我</el-checkbox>
-            <el-link type="primary" :underline="false" @click="goToForgetPassword"
-              >忘记密码？</el-link
-            >
-          </div>
         </el-form-item>
         <el-form-item>
           <el-button id="login-btn" @click="login" class="button" type="primary" auto-insert-space>登录</el-button>

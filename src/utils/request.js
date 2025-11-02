@@ -4,7 +4,7 @@ import { useUserStore } from '@/stores'
 
 // 创建axios实例
 const instance = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: 'http://8.162.3.209:8080',
   timeout: 10000,
 })
 
